@@ -37,6 +37,19 @@ def setup_env():
     ])
     import pelican
 
+  pelican_themes_dir = os.path.join(packages, 'pelican-themes')
+  if not os.path.exists(pelican_themes_dir):
+    subprocess.run([
+      'git', 'clone', '--recursive', 'https://github.com/getpelican/pelican-themes', pelican_themes_dir
+    ], check=True)
+
+  # We hard-code in a theme folder for use in all subsequent commands/pelican invocations
+  os.environ['THEME'] = os.environ.get('THEME', os.path.join(pelican_themes_dir, 'bootstrap'))
+
+  print('Using theme at', os.environ['THEME'])
+
+
+
 def ensure_site_initialized(args):
   if not os.path.exists(args.site_content):
     os.makedirs(args.site_content, exist_ok=True)
