@@ -74,10 +74,17 @@ def run_build(args):
   setup_env()
   ensure_site_initialized(args)
 
-  subprocess.run([
-    sys.executable, '-m', 'pelican',
-      'content',
-  ], check=True, cwd=args.site_content)
+  if 'THEME' in os.environ and os.path.exists(os.environ['THEME']):
+    subprocess.run([
+      sys.executable, '-m', 'pelican',
+        'content',
+        '--theme-path', os.environ['THEME'],
+    ], check=True, cwd=args.site_content)
+  else:
+    subprocess.run([
+      sys.executable, '-m', 'pelican',
+        'content',
+    ], check=True, cwd=args.site_content)
 
   out_dir = os.path.join(args.site_content, 'output')
   print()
@@ -89,15 +96,27 @@ def run_server(args):
   setup_env()
   ensure_site_initialized(args)
   open_browser_delayed(2.5, f'http://127.0.0.1:{args.server_port}')
-  subprocess.run([
-    sys.executable, '-m', 'pelican',
-      '--listen',
-      '--autoreload',
-      '--port', str(args.server_port),
-      '--bind', '127.0.0.1',
-      '--ignore-cache',
-      '--relative-urls',
-  ], check=True, cwd=args.site_content)
+  if 'THEME' in os.environ and os.path.exists(os.environ['THEME']):
+    subprocess.run([
+      sys.executable, '-m', 'pelican',
+        '--listen',
+        '--autoreload',
+        '--theme-path', os.environ['THEME'],
+        '--port', str(args.server_port),
+        '--bind', '127.0.0.1',
+        '--ignore-cache',
+        '--relative-urls',
+    ], check=True, cwd=args.site_content)
+  else:
+    subprocess.run([
+      sys.executable, '-m', 'pelican',
+        '--listen',
+        '--autoreload',
+        '--port', str(args.server_port),
+        '--bind', '127.0.0.1',
+        '--ignore-cache',
+        '--relative-urls',
+    ], check=True, cwd=args.site_content)
 
 def main(argv=sys.argv):
   ap = argparse.ArgumentParser(
