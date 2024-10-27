@@ -3,6 +3,17 @@ import os
 import sys
 import argparse
 import subprocess
+import webbrowser
+import threading
+import time
+
+def open_browser_delayed_t(delay_s, url_to_open):
+  time.sleep(delay_s),
+  webbrowser.open(url_to_open)
+
+def open_browser_delayed(delay_s, url_to_open):
+  t = threading.Thread(target=open_browser_delayed_t, args=(delay_s, url_to_open))
+  t.run()
 
 def setup_env():
   packages = os.path.join(os.path.dirname(__file__), '.py-env')
@@ -64,6 +75,7 @@ def run_build(args):
 def run_server(args):
   setup_env()
   ensure_site_initialized(args)
+  open_browser_delayed(2.5, f'http://127.0.0.1:{args.server_port}')
   subprocess.run([
     sys.executable, '-m', 'pelican',
       '--listen',
