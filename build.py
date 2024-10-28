@@ -37,6 +37,17 @@ def setup_env():
     ])
     import pelican
 
+  try:
+    from pelican.plugins import search
+  except:
+    subprocess.run([
+      sys.executable, '-m', 'pip',
+        'install',
+        f'--target={packages}',
+        'pelican-search',
+    ])
+    from pelican.plugins import search
+
   pelican_themes_dir = os.path.join(packages, 'pelican-themes')
   if not os.path.exists(pelican_themes_dir):
     subprocess.run([
