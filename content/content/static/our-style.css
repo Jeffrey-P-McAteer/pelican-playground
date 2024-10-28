@@ -1,6 +1,12 @@
 
+p.search-parent {
+  margin-left: 0pt;
+  display: inline;
+}
 
 img {
   /* Do not let large images take up >75% of the screen's width */
   max-width: 75vw;
 }
+
+

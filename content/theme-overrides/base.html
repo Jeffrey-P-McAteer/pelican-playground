@@ -52,27 +52,16 @@
     <div class="topbar-inner">
     <div class="container-fluid">
       <a class="brand" href="{{ SITEURL }}/">{{ SITENAME }}</a>
-      <ul class="nav">
-        {% for title, link in MENUITEMS %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
-        {% endfor %}
-        {% if DISPLAY_PAGES_ON_MENU %}
-          {% for page in pages %}
-            <li><a href="{{ SITEURL }}/{{ page.url }}">{{ page.title }}</a></li>
-          {% endfor %}
-        {% endif %}
-        {% for cat, null in categories %}
-          <li {% if cat == category %}class="active"{% endif %}><a href="{{ SITEURL }}/{{ cat.url }}">{{ cat }}</a></li>
-        {% endfor %}
-      </ul>
+      <p class="search-parent">
+        Search: <input data-stork="sitesearch" />
+        <div data-stork="sitesearch-output"></div>
+      </p>
+      <!--
       <p class="pull-right">
         <a href="{{ SITEURL }}/archives.html">[archives]</a>
         <a href="{{ SITEURL }}/tags.html">[tags]</a>
-        <div>
-          Search: <input data-stork="sitesearch" />
-          <div data-stork="sitesearch-output"></div>
-        </div>
       </p>
+      -->
     </div>
     </div>
   </div>
@@ -87,10 +76,23 @@
         {% endfor %}
       </ul>
       <div class="social">
-      <h3>Social</h3>
-      <ul>
+      <h3>Articles</h3>
+      <!--<ul>
         {% for name, link in SOCIAL %}
         <li><a href="{{ link }}">{{ name }}</a></li>
+        {% endfor %}
+      </ul>-->
+      <ul>
+        {% for title, link in MENUITEMS %}
+          <li><a href="{{ link }}">{{ title }}</a></li>
+        {% endfor %}
+        {% if DISPLAY_PAGES_ON_MENU %}
+          {% for page in pages %}
+            <li><a href="{{ SITEURL }}/{{ page.url }}">{{ page.title }}</a></li>
+          {% endfor %}
+        {% endif %}
+        {% for cat, null in categories %}
+          <li {% if cat == category %}class="active"{% endif %}><a href="{{ SITEURL }}/{{ cat.url }}">{{ cat }}</a></li>
         {% endfor %}
       </ul>
       </div>
