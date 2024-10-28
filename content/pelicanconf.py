@@ -37,3 +37,7 @@ STATIC_PATHS = [
     'images',
     'static'
 ]
+
+STORK_OUTPUT_OPTIONS = {
+    'debug': True,
+}

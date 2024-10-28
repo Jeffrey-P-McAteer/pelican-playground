@@ -6,6 +6,7 @@ import subprocess
 import webbrowser
 import threading
 import time
+import urllib.request
 
 def open_browser_delayed_t(delay_s, url_to_open):
   time.sleep(delay_s),
@@ -46,7 +47,20 @@ def setup_env():
         f'--target={packages}',
         'pelican-search',
     ])
-    from pelican.plugins import search
+    try:
+      from pelican.plugins import search
+    except:
+      pelican_plugins_search_dir = os.path.join(packages, 'pelican', 'plugins', 'search')
+      os.makedirs(pelican_plugins_search_dir, exist_ok=True)
+      urllib.request.urlretrieve(
+        'https://raw.githubusercontent.com/pelican-plugins/search/refs/heads/main/pelican/plugins/search/search.py',
+        os.path.join(pelican_plugins_search_dir, 'search.py')
+      )
+      urllib.request.urlretrieve(
+        'https://raw.githubusercontent.com/pelican-plugins/search/refs/heads/main/pelican/plugins/search/__init__.py',
+        os.path.join(pelican_plugins_search_dir, '__init__.py')
+      )
+      from pelican.plugins import search
 
   pelican_themes_dir = os.path.join(packages, 'pelican-themes')
   if not os.path.exists(pelican_themes_dir):
