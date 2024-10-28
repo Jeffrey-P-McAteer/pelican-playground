@@ -48,6 +48,35 @@ def setup_env():
 
   print('Using theme at', os.environ['THEME'])
 
+  # We also clone & build stork.exe on the assumption
+  # that cargo.exe exists.
+  stork_git_dir = os.path.join(packages, 'stork')
+  if not os.path.exists(stork_git_dir):
+    subprocess.run([
+      'git', 'clone', 'https://github.com/jameslittle230/stork.git', stork_git_dir
+    ], check=True)
+
+  stork_binary_possible_paths = [
+    os.path.join(stork_git_dir, 'target', 'release', 'stork'),
+    os.path.join(stork_git_dir, 'target', 'release', 'stork.exe'),
+  ]
+  if not any(os.path.exists(x) for x in stork_binary_possible_paths):
+    # None of the .exe files exist, perform a build!
+    print(f'Building Stork from {stork_git_dir} using cargo')
+    subprocess.run([
+      'cargo', 'build', '--release'
+    ], check=True, cwd=stork_git_dir)
+  
+  stork_binary = None
+  for x in stork_binary_possible_paths:
+    if os.path.exists(x):
+      stork_binary = x
+  
+  print(f'stork_binary = {stork_binary}')
+  stork_bin_dir = os.path.dirname(stork_binary)
+  if not stork_bin_dir in os.environ.get('PATH', ''):
+    os.environ['PATH'] = os.pathsep.join([x for x in os.environ.get('PATH', '').split(os.pathsep) if len(x) > 0] + [stork_bin_dir])
+
 
 
 def ensure_site_initialized(args):
