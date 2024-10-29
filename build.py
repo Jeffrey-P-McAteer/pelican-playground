@@ -7,14 +7,24 @@ import webbrowser
 import threading
 import time
 import urllib.request
+import socket
 
-def open_browser_delayed_t(delay_s, url_to_open):
-  time.sleep(delay_s),
+def open_browser_poll_for_port_t(args, url_to_open):
+  for s in range(0,60):
+    try:
+      sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      result = sock.connect_ex(('127.0.0.1', args.server_port))
+      if result == 0:
+        break
+    except:
+      pass
+    time.sleep(0.95)
+
   webbrowser.open(url_to_open)
 
-def open_browser_delayed(delay_s, url_to_open):
-  t = threading.Thread(target=open_browser_delayed_t, args=(delay_s, url_to_open))
-  t.run()
+def open_browser_delayed(args, url_to_open):
+  t = threading.Thread(target=open_browser_poll_for_port_t, args=(args, url_to_open))
+  t.start()
 
 def setup_env():
   packages = os.path.join(os.path.dirname(__file__), '.py-env')
@@ -149,7 +159,9 @@ def run_build(args):
 def run_server(args):
   setup_env()
   ensure_site_initialized(args)
-  open_browser_delayed(2.5, f'http://127.0.0.1:{args.server_port}')
+
+  open_browser_delayed(args, f'http://127.0.0.1:{args.server_port}')
+
   if 'THEME' in os.environ and os.path.exists(os.environ['THEME']):
     subprocess.run([
       sys.executable, '-m', 'pelican',
